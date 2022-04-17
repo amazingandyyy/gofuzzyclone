@@ -191,34 +191,14 @@ func wildCardToRegexp(pattern string) string {
 }
 
 func main() {
+	var setup = flag.Bool("setup", false, "renew github token")
+	var dest = flag.String("out", ".", "output to which sdirectory")
+	var search = flag.String("search", "", "search patern")
 	var owner = flag.String("owner", "", "github user/org")
-	var wildcard_pattern = flag.String("wildcard", "", "repository name pattern (wildcard)")
-	var regex_pattern = flag.String("regex", "", "repository name pattern (regex)")
-	var auth = flag.Bool("auth", false, "renew github token")
-	var dest = flag.String("dest", "./", "destination directory")
-	var help = flag.Bool("help", false, "Help message")
+	var mode = flag.String("mode", "regex", "matching mechanism")
 	flag.Parse()
 
-	if *help {
-		println("green", "Usage: gofuzzyclone [options]")
-		println("yellow", "Options:")
-		fmt.Println("  -owner: github user/org")
-		fmt.Println("  -auth: renew github token")
-		fmt.Println("  -wildcard: repository name pattern (wildcard)")
-		fmt.Println("  -dest: destination directory")
-		fmt.Println("  -regex: repository name pattern (regex)")
-		fmt.Println("  -help: help message")
-		fmt.Println("")
-		println("yellow", "Requirements:")
-		fmt.Println("GITHUB_TOKEN environment variable is needed")
-		fmt.Println("Generate token at https://github.com/settings/tokens/new?scopes=repo&description=gofuzzyclone-cli")
-		fmt.Println("")
-		println("yellow", "Example:")
-		fmt.Println("gofuzzyclone -owner amazingandyyy -wildcard go* -dest ./code")
-		fmt.Println("gofuzzyclone -owner amazingandyyy -regex ^go.* -dest ./code")
-		os.Exit(0)
-	}
-	if *auth {
+	if *setup {
 		renewGhToken()
 		os.Exit(0)
 	}
@@ -241,23 +221,17 @@ func main() {
 		renewGhToken()
 	}
 
+	if *search == "" {
+		fmt.Printf("search: ")
+		fmt.Scanf("%s", search)
+	}
 	if *owner == "" {
-		fmt.Printf("Search under which owner? ")
+		fmt.Printf("owner: ")
 		fmt.Scanf("%s", owner)
 	}
 
-	if *wildcard_pattern == "" {
-		fmt.Printf("wildcard pattern: (Press [Enter] to skip) ")
-		fmt.Scanf("%s", wildcard_pattern)
-	}
-
-	if *regex_pattern == "" {
-		fmt.Printf("regex pattern: (Press [Enter] to skip) ")
-		fmt.Scanf("%s", regex_pattern)
-	}
-
 	s := spinner.New(spinner.CharSets[39], 200*time.Millisecond) // Build our new spinner
-	s.Prefix = fmt.Sprintf("Searching in %v ", *owner)
+	s.Prefix = fmt.Sprintf("Searching %q ", *search)
 	s.Start() // Start the spinner
 
 	ctx := context.Background()
@@ -270,9 +244,13 @@ func main() {
 	all_repos_matched := make([]*github.Repository, 0)
 
 	for _, repo := range all_repos {
-		wildcard_matched, _ := regexp.MatchString(wildCardToRegexp(*wildcard_pattern), repo.GetName())
-		regex_matched, _ := regexp.MatchString(*regex_pattern, repo.GetName())
-		if (wildcard_matched && *wildcard_pattern != "") || (regex_matched && *regex_pattern != "") {
+		matched := false
+		if *mode == "regex" {
+			matched, _ = regexp.MatchString(*search, repo.GetName())
+		} else if *mode == "wildcard" {
+			matched, _ = regexp.MatchString(wildCardToRegexp(*search), repo.GetName())
+		}
+		if matched {
 			all_repos_matched = append(all_repos_matched, repo)
 		}
 	}
@@ -282,14 +260,14 @@ func main() {
 		fmt.Printf("%d %v\n", i+1, repo.GetFullName())
 	}
 	confirm := "n"
-	println("green", fmt.Sprintf("Found %d %v's repositories match pattern of %v %v", len(all_repos_matched), *owner, *wildcard_pattern, *regex_pattern))
+	println("green", fmt.Sprintf("Result: %d repos match %q", len(all_repos_matched), *search))
 
 	if *dest == "./" {
 		fmt.Printf("Clone all repos to which folder? ")
 		fmt.Scanf("%s", dest)
 	}
 
-	printf("yellow", fmt.Sprintf("Are you sure to continue cloning them all into %v ? (Y/n) ", *dest))
+	printf("yellow", fmt.Sprintf("Clone %d repos to %v? (Y/n) ", len(all_repos_matched), *dest))
 	fmt.Scanf("%s", &confirm)
 
 	if confirm != "Y" {
