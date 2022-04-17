@@ -1,4 +1,4 @@
-module go-approve
+module gofuzzyclone
 
 go 1.17
 

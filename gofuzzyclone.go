@@ -192,7 +192,7 @@ func wildCardToRegexp(pattern string) string {
 
 func main() {
 	var setup = flag.Bool("setup", false, "renew github token")
-	var dest = flag.String("out", ".", "output to which sdirectory")
+	var dest = flag.String("output", "", "output to which sdirectory")
 	var search = flag.String("search", "", "search patern")
 	var owner = flag.String("owner", "", "github user/org")
 	var mode = flag.String("mode", "regex", "matching mechanism")
@@ -259,12 +259,12 @@ func main() {
 	confirm := "n"
 	println("green", fmt.Sprintf("Result: %d repos match %q", len(all_repos_matched), *search))
 
-	if *dest == "./" {
-		fmt.Printf("Clone all repos to which folder? ")
+	if *dest == "" {
+		fmt.Printf("Clone %d repos to which folder? ", len(all_repos_matched))
 		fmt.Scanf("%s", dest)
 	}
 
-	printf("yellow", fmt.Sprintf("Clone %d repos to %v? (Y/n) ", len(all_repos_matched), *dest))
+	printf("yellow", "Confirm? (Y/n) ")
 	fmt.Scanf("%s", &confirm)
 
 	if confirm != "Y" {
