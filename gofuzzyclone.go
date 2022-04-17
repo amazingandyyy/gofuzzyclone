@@ -246,12 +246,12 @@ func main() {
 	}
 
 	if *wildcard_pattern == "" {
-		fmt.Printf("Search for what wildcard pattern? (Press [Enter] to skip) ")
+		fmt.Printf("wildcard pattern: (Press [Enter] to skip) ")
 		fmt.Scanf("%s", wildcard_pattern)
 	}
 
 	if *regex_pattern == "" {
-		fmt.Printf("Search for what regex pattern? (Press [Enter] to skip) ")
+		fmt.Printf("regex pattern: (Press [Enter] to skip) ")
 		fmt.Scanf("%s", regex_pattern)
 	}
 
@@ -271,7 +271,7 @@ func main() {
 	for _, repo := range all_repos {
 		wildcard_matched, _ := regexp.MatchString(wildCardToRegexp(*wildcard_pattern), repo.GetName())
 		regex_matched, _ := regexp.MatchString(*regex_pattern, repo.GetName())
-		if wildcard_matched || regex_matched {
+		if (wildcard_matched && *wildcard_pattern != "") || (regex_matched && *regex_pattern != "") {
 			all_repos_matched = append(all_repos_matched, repo)
 		}
 	}
