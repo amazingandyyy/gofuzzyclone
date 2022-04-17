@@ -205,6 +205,7 @@ func main() {
 		fmt.Println("  -owner: github user/org")
 		fmt.Println("  -auth: renew github token")
 		fmt.Println("  -wildcard: repository name pattern (wildcard)")
+		fmt.Println("  -dest: destination directory")
 		fmt.Println("  -regex: repository name pattern (regex)")
 		fmt.Println("  -help: help message")
 		fmt.Println("")
