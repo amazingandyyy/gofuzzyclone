@@ -5,7 +5,7 @@ go fuzzy search repos in regex and clone
 # Installation
 
 ```sh
-bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/main/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/main/scripts/install.sh)
 ```
 
 ## Preparation
