@@ -20,7 +20,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-var gofuzzycloneConfigFilePath string = os.ExpandEnv("$HOME/.gofuzzyclone.json")
+var configFilePath string = os.ExpandEnv("$HOME/.gofuzzyclone.json")
 
 func check(e error) {
 	if e != nil {
@@ -52,7 +52,7 @@ func printf(color string, message string) {
 	fmt.Printf("%s%s%s", string(color_palettes[color]), message, color_palettes["reset"])
 }
 
-type gofuzzycloneConfig struct {
+type config struct {
 	Ghtoken string `json:"github_token"`
 }
 
@@ -79,22 +79,22 @@ func renewGhToken() {
 	println("green", "Token is valid")
 
 	var jsonBlob = []byte(`{"github_token": "` + ghToken + `"}`)
-	gofuzzycloneConfig := gofuzzycloneConfig{}
-	err := json.Unmarshal(jsonBlob, &gofuzzycloneConfig)
+	cf := config{}
+	err := json.Unmarshal(jsonBlob, &cf)
 	if err != nil {
 		panic(err)
 	}
-	if _, err := os.Stat(gofuzzycloneConfigFilePath); err == nil {
+	if _, err := os.Stat(configFilePath); err == nil {
 		hasConfigFile = true
 	}
 	if os.Getenv("CI") != "true" {
-		gofuzzycloneConfigJson, _ := json.Marshal(gofuzzycloneConfig)
+		cfJson, _ := json.Marshal(cf)
 		if !hasConfigFile {
 			// create one
-			f, err := os.Create(gofuzzycloneConfigFilePath)
+			f, err := os.Create(configFilePath)
 			check(err)
 			defer f.Close()
-			err = ioutil.WriteFile(gofuzzycloneConfigFilePath, gofuzzycloneConfigJson, 0644)
+			err = ioutil.WriteFile(configFilePath, cfJson, 0644)
 			check(err)
 		}
 	}
@@ -203,16 +203,13 @@ func main() {
 		os.Exit(0)
 	}
 	ghToken := os.Getenv("GITHUB_TOKEN")
-	if _, err := os.Stat(gofuzzycloneConfigFilePath); err == nil {
+	if _, err := os.Stat(configFilePath); err == nil {
 		// config file does exist
-		config, _ := os.ReadFile(gofuzzycloneConfigFilePath)
-		var gofuzzycloneConfig gofuzzycloneConfig
-		err := json.Unmarshal(config, &gofuzzycloneConfig)
-		if err != nil {
-			panic(err)
-		}
-		if gofuzzycloneConfig.Ghtoken != "" {
-			ghToken = gofuzzycloneConfig.Ghtoken
+		existingConfig, _ := os.ReadFile(configFilePath)
+		var cf config
+		json.Unmarshal(existingConfig, &cf)
+		if cf.Ghtoken != "" {
+			ghToken = cf.Ghtoken
 		}
 		validateGhToken(ghToken)
 	}
@@ -230,7 +227,7 @@ func main() {
 		fmt.Scanf("%s", owner)
 	}
 
-	s := spinner.New(spinner.CharSets[39], 200*time.Millisecond) // Build our new spinner
+	s := spinner.New(spinner.CharSets[4], 200*time.Millisecond) // Build our new spinner
 	s.Prefix = fmt.Sprintf("Searching %q ", *search)
 	s.Start() // Start the spinner
 
