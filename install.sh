@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export version=0.0.1
+export version=0.0.2
 export author=amazingandyyy
 export package_name=gofuzzyclone
 
