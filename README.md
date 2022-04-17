@@ -19,6 +19,11 @@ bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/mai
 ```
 gofuzzyclone -help
 
+# fastline mode
+gofuzzyclone -owner amazingandyyy -wildcard "*-template" -dest ./projects
+gofuzzyclone -owner amazingandyyy -regex "^go.*" -dest ./projects
+
+# interactive mode
 gofuzzyclone
 Search under which owner? amazingandyyy
 Search for what wildcard pattern? (Press [Enter] to skip) go*
@@ -57,16 +62,13 @@ Cloned: fotingo
 Cloned: good-job
 Cloned: go-grpc-start
 Cloned: gomorph
-Cloned: django-api
-Cloned: one-click-hugo-cms
-Cloned: javascript-algorithms
-Cloned: go-app
-Cloned: app-template
-Cloned: learn-golang-with-todd
-Cloned: learn-golang-basic
-Cloned: gotraining
 ...
 ```
+
+## Resources
+
+- wildcard
+- [regex](http://regex101.com)
 
 ## LICENSE
 
