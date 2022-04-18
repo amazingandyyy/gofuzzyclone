@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"gofuzzyclone/lib/helper"
-	"gofuzzyclone/lib/logger"
+	"gofuzzyclone/internal/helper"
+	"gofuzzyclone/internal/logger"
 
 	"github.com/briandowns/spinner"
 	"github.com/go-git/go-git/v5"

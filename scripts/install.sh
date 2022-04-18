@@ -1,23 +1,34 @@
 #!/usr/bin/env bash
-export stable_version=0.0.6
 
 export package_name=gofuzzyclone
 export author=amazingandyyy
-[[ -n "$1" ]] && stable_version=$1
+# get the latest version or change to a specific version
+export latest_version=$(curl --silent "https://api.github.com/repos/$author/$package_name/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+[[ -n "$1" ]] && latest_version=$1
 
-echo "> installing $package_name@$stable_version"
-curl -LsO https://github.com/$author/$package_name/archive/refs/tags/$stable_version.zip &&
-unzip -o $stable_version.zip &&
-rm -rf /opt/homebrew/bin/$package_name &&
-sudo touch /opt/homebrew/bin/$package_name &&
-chmod +x $package_name-$stable_version/bin/$package_name &&
-mv -f $package_name-$stable_version/bin/$package_name /opt/homebrew/bin
-rm -rf $package_name-$stable_version $stable_version.zip
+echo "Installing/upgrading to $package_name@$latest_version (latest)"
+
+fmpfolder=/tmp
+tmpoupoutput=$fmpfolder/$package_name-$latest_version
+tmpoupoutputgz=$tmpoupoutput.tar.gz
+userlocalbin=/usr/local/bin/$package_name
+
+curl -Ls "https://github.com/$author/$package_name/archive/refs/tags/$latest_version.tar.gz" -o $tmpoupoutputgz
+tar -zxf $tmpoupoutputgz --directory /tmp
+if ! ls -d $userlocalbin > /dev/null 2>&1
+then
+  sudo touch $userlocalbin
+  sudo mv $fmpfolder/$package_name-$latest_version/bin/$package_name $userlocalbin
+else
+  sudo mv $fmpfolder/$package_name-$latest_version/bin/$package_name $userlocalbin
+fi
+
+rm -rf $fmpfolder/$package_name $tmpoupoutput $tmpoupoutputgz
 
 if ! [[ -x $(command -v $package_name) ]]; then
-  echo "$package_name failed to install" >&2
+  echo "Installed $package_name unsuccessfully" >&2
   exit 1
 else
-  echo "Installed $package_name@$stable_version successfully!"
+  echo "Installed $package_name@$latest_version successfully!"
   gofuzzyclone -help
 fi

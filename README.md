@@ -1,6 +1,6 @@
 # gofuzzyclone
 
-go fuzzy search repos in regex and clone
+Go fuzzy search repos with regex or wildcard
 
 # Installation
 

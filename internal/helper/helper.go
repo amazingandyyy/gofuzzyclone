@@ -2,7 +2,7 @@ package helper
 
 import (
 	"fmt"
-	"gofuzzyclone/lib/logger"
+	"gofuzzyclone/internal/logger"
 )
 
 // HandleError is a helper function to handle error
