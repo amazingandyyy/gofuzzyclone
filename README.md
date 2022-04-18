@@ -21,8 +21,8 @@ bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/mai
 gofuzzyclone -help
 
 # fastline mode
-gofuzzyclone -owner amazingandyyy -search "^go.*" -out ./projects
-gofuzzyclone -owner amazingandyyy -search "*-template" -mode wildcard -out ./projects
+gofuzzyclone -owner amazingandyyy -search "^go.*" -output ./code
+gofuzzyclone -owner amazingandyyy -search "*-template" -mode wildcard -output ./projects
 
 # interactive mode
 gofuzzyclone

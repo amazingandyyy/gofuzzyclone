@@ -11,12 +11,10 @@ import (
 	"path"
 	"regexp"
 	"strings"
-	"time"
 
 	"gofuzzyclone/internal/helper"
 	"gofuzzyclone/internal/logger"
 
-	"github.com/briandowns/spinner"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/google/go-github/v43/github"
@@ -73,13 +71,19 @@ func getOrgRepos(client *github.Client, org string) ([]*github.Repository, error
 	max := 1000
 	var allRepos []*github.Repository
 	opt := &github.RepositoryListByOrgOptions{
-		Sort: "updated",
+		Sort: "pushed",
 		ListOptions: github.ListOptions{
-			PerPage: 100,
+			PerPage: 80,
 		},
 	}
+	counter := 0
+	dotsCounter := 0
+	dots := []string{".", ".", ".", "."}
 	for {
+		fmt.Printf("\rScanning %d repositories %s", counter, strings.Join(dots[:dotsCounter%3+1], ""))
+		dotsCounter++
 		repos, resp, err := client.Repositories.ListByOrg(context.Background(), org, opt)
+		counter += len(repos)
 		if len(allRepos) > max {
 			allRepos = allRepos[:max]
 			break
@@ -105,13 +109,20 @@ func getPersonalRepos(client *github.Client, owner string) ([]*github.Repository
 	max := 1000
 	var allRepos []*github.Repository
 	opt := &github.RepositoryListOptions{
-		Sort: "updated",
+		Sort:       "pushed",
+		Visibility: "all",
 		ListOptions: github.ListOptions{
-			PerPage: 100,
+			PerPage: 60,
 		},
 	}
+	counter := 0
+	dotsCounter := 0
+	dots := []string{".", ".", ".", ".", "."}
 	for {
+		fmt.Printf("\rScanning %d repositories %s", counter, strings.Join(dots[:dotsCounter%4], " "))
+		dotsCounter++
 		repos, resp, err := client.Repositories.List(context.Background(), owner, opt)
+		counter += len(repos)
 		if len(allRepos) > max {
 			allRepos = allRepos[:max]
 			break
@@ -120,7 +131,6 @@ func getPersonalRepos(client *github.Client, owner string) ([]*github.Repository
 		if len(repos) == 0 {
 			break
 		}
-
 		opt.Page = resp.NextPage
 		allRepos = append(allRepos, repos...)
 		if resp.NextPage == 0 {
@@ -131,7 +141,7 @@ func getPersonalRepos(client *github.Client, owner string) ([]*github.Repository
 }
 
 func getRepos(client *github.Client, userType, owner string) ([]*github.Repository, error) {
-	if userType == "org" {
+	if userType == "Organization" {
 		return getOrgRepos(client, owner)
 	} else {
 		return getPersonalRepos(client, owner)
@@ -157,7 +167,7 @@ func wildCardToRegexp(pattern string) string {
 
 func main() {
 	var setup = flag.Bool("setup", false, "renew github token")
-	var dest = flag.String("output", "", "output to which sdirectory")
+	var dest = flag.String("output", "", "output to which directory")
 	var search = flag.String("search", "", "search patern")
 	var owner = flag.String("owner", "", "github user/org")
 	var mode = flag.String("mode", "regex", "matching mechanism")
@@ -192,15 +202,15 @@ func main() {
 		fmt.Scanf("%s", owner)
 	}
 
-	s := spinner.New(spinner.CharSets[4], 200*time.Millisecond) // Build our new spinner
-	s.Prefix = fmt.Sprintf("Searching %q ", *search)
-	s.Start() // Start the spinner
+	// s := spinner.New(spinner.CharSets[4], 200*time.Millisecond) // Build our new spinner
+	// s.Prefix = fmt.Sprintf("Searching %q ", *search)
+	// s.Start() // Start the spinner
 
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: ghToken})
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
-	user, _, _ := client.Users.Get(ctx, "")
+	user, _, _ := client.Users.Get(ctx, *owner)
 
 	all_repos, _ := getRepos(client, *user.Type, *owner)
 	all_repos_matched := make([]*github.Repository, 0)
@@ -217,12 +227,12 @@ func main() {
 		}
 	}
 	fmt.Println("")
-	s.Stop()
+	// s.Stop()
 	for i, repo := range all_repos_matched {
 		fmt.Printf("%d %v\n", i+1, repo.GetFullName())
 	}
 	confirm := "n"
-	logger.Println("green", fmt.Sprintf("Result: %d repos match %q", len(all_repos_matched), *search))
+	logger.Println("green", fmt.Sprintf("Result: %d repos match %q in %v", len(all_repos_matched), *search, *owner))
 	if len(all_repos_matched) == 0 {
 		os.Exit(0)
 	}
