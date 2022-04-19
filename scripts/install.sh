@@ -6,7 +6,11 @@ export author=amazingandyyy
 export latest_version=$(curl --silent "https://api.github.com/repos/$author/$package_name/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
 [[ -n "$1" ]] && latest_version=$1
 
-echo "Installing/upgrading to $package_name@$latest_version (latest)"
+if ! [[ -x $(command -v $package_name) ]]; then
+  echo "Installing $package_name@$latest_version"
+else
+  echo "Upgrading to $package_name@$latest_version"
+fi
 
 fmpfolder=/tmp
 tmpoupoutput=$fmpfolder/$package_name-$latest_version
