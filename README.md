@@ -2,7 +2,7 @@
 
 Go fuzzy search repos with regex or wildcard
 
-# Installation
+## Installation
 
 ```sh
 bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/main/scripts/install.sh)

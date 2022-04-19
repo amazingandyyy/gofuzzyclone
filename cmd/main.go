@@ -172,7 +172,8 @@ func main() {
 		// config file does exist
 		existingConfig, _ := os.ReadFile(configFilePath)
 		var cf config
-		json.Unmarshal(existingConfig, &cf)
+		err = json.Unmarshal(existingConfig, &cf)
+		helper.HandleError(err)
 		if cf.Ghtoken != "" {
 			ghToken = cf.Ghtoken
 		}
