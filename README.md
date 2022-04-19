@@ -1,8 +1,19 @@
-# gofuzzyclone
-
+<p styles="font-size: 20rem" align="center">
+    <img styles="margin: 0px" width="350px" src="https://i.giphy.com/media/NytMLKyiaIh6VH9SPm/giphy.webp" />
+</p>
+<h1 align="center">
+gofuzzysearch
+</h1>
+<h4 align="center">
 Go fuzzy search repos with regex or wildcard
+</h4>
+<p align="center">
+Never clone repos one by one
+</p>
 
 ## Installation
+
+It's easy!
 
 ```sh
 bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/main/scripts/install.sh)
@@ -20,19 +31,48 @@ bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/mai
 # get instructions
 gofuzzyclone -help
 
-# fastline mode
+# regex mode
 gofuzzyclone -owner amazingandyyy -search ".*-deployments$" -output ./code
-gofuzzyclone -owner amazingandyyy -search "*-template" -mode wildcard -output ./projects
+# wildcard mode
+gofuzzyclone -owner amazingandyyy -search "*-deployments" -mode wildcard -output ./projects
 
 # interactive mode
 gofuzzyclone
 ```
 
+## Development
+
+### Initialization
+
+```sh
+git clone https://github.com/amazingandyyy/gofuzzyclone.git
+cd gofuzzyclone
+./scripts/set
+```
+
+### Trigger pre-commit hook manually
+
+```sh
+pre-commit run --all-files
+```
+
+---
+
+![banner](assets/repo-banner.jpg)
+
+## Contribution
+
+- Try out this tool
+- Star this repo
+- Share with your friend!
+- [Create issue](https://github.com/amazingandyyy/gofuzzyclone/issues/new)
+- Create PRs
+
 ## Resources
 
-- [regex](http://regex101.com)
+- [regex101](http://regex101.com)
 - wildcard
 
 ## LICENSE
 
-[MIT](./LICENSE)
+[MIT](LICENSE)

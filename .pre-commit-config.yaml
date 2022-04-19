@@ -29,6 +29,7 @@ repos:
       - id: shfmt
       - id: script-must-have-extension
       - id: markdownlint # Configure in .mdlrc
+        args: ["-r ~MD013,~MD033,~MD002"]
   - repo: https://github.com/rhysd/actionlint
     rev: v1.6.8
     hooks:
