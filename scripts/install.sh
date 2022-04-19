@@ -17,8 +17,7 @@ curl -Ls "https://github.com/$author/$package_name/archive/refs/tags/$latest_ver
 tar -zxf $tmpoupoutputgz --directory /tmp
 if ! ls -d $userlocalbin > /dev/null 2>&1
 then
-  sudo touch $userlocalbin
-  sudo mv $fmpfolder/$package_name-$latest_version/bin/$package_name $userlocalbin
+  sudo touch $userlocalbin && mv $fmpfolder/$package_name-$latest_version/bin/$package_name $userlocalbin
 else
   sudo mv $fmpfolder/$package_name-$latest_version/bin/$package_name $userlocalbin
 fi
