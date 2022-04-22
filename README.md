@@ -2,10 +2,10 @@
     <img styles="margin: 0px" width="350px" src="https://i.giphy.com/media/NytMLKyiaIh6VH9SPm/giphy.webp" />
 </p>
 <h1 align="center">
-gofuzzysearch
+gofuzzyclone
 </h1>
 <h4 align="center">
-Go fuzzy search repos with regex or wildcard
+Go fuzzy search repos with regex or wildcard and clone them
 </h4>
 <p align="center">
 Never clone repos one by one
