@@ -15,7 +15,7 @@ Never clone repos one by one
 
 It's easy!
 
-```sh
+```console
 bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/main/scripts/install.sh)
 ```
 
