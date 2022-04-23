@@ -27,7 +27,7 @@ bash <(curl -sL https://raw.githubusercontent.com/amazingandyyy/gofuzzyclone/mai
 
 ## Usage
 
-```
+```console
 # get instructions
 gofuzzyclone -help
 
