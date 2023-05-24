@@ -47,7 +47,7 @@ gofuzzyclone
 ```console
 git clone https://github.com/amazingandyyy/gofuzzyclone.git
 cd gofuzzyclone
-./scripts/set
+./scripts/setup
 ```
 
 ### Trigger pre-commit hook manually
